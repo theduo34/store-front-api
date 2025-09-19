@@ -1,0 +1,22 @@
+CREATE TABLE user_group_types (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    role VARCHAR(16) NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+);
+
+INSERT INTO user_group_types (role) VALUES
+    ('CUSTOMER'),
+    ('SELLER'),
+    ('MODERATOR'),
+    ('ADMIN');
+
+ALTER TABLE users
+DROP COLUMN role,
+    ADD COLUMN group_type BIGINT NOT NULL DEFAULT 1;
+
+ALTER TABLE users
+    ADD CONSTRAINT fk_users_group_type
+        FOREIGN KEY (group_type) REFERENCES user_group_types (id)
+            ON DELETE RESTRICT
+            ON UPDATE CASCADE;

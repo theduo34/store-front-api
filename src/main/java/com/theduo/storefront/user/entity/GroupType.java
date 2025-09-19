@@ -36,7 +36,7 @@ public class GroupType {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "useGroup", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "groupType", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<User> users = new ArrayList<>();
 

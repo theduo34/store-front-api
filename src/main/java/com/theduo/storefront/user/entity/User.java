@@ -25,7 +25,7 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "user_uuid", updatable = false)
+    @Column(name = "uuid", updatable = false)
     private UUID uuid;
 
     @Column(name = "email")
@@ -49,7 +49,7 @@ public class User {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_type")
+    @JoinColumn(name = "group_type_id")
     private GroupType groupType;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

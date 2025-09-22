@@ -1,4 +1,4 @@
-package com.theduo.storefront.category.entity;
+package com.theduo.storefront.cart.entity;
 
 import com.theduo.storefront.product.entity.Product;
 import jakarta.persistence.*;
@@ -11,24 +11,30 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "cart_items")
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Byte id;
+    private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @Column(name = "quantity")
+    private Integer quantity;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -37,7 +43,4 @@ public class Category {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "category")
-    private Set<Product> products = new HashSet<>();
 }

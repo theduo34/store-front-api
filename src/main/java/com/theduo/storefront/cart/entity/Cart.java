@@ -1,0 +1,35 @@
+package com.theduo.storefront.cart.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
+
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "carts")
+public class Cart {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
+    private UUID id;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false, insertable = false)
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<CartItem> items = new LinkedHashSet<>();
+}

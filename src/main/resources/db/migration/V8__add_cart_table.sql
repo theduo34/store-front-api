@@ -1,3 +1,5 @@
+
+
 create table cart_items
 (
     id bigint auto_increment primary key,

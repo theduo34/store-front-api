@@ -1,5 +1,3 @@
-alter table carts
-drop column updated_at;
 
 alter table users
     change user_uuid uuid binary(16) default (uuid_to_bin(uuid())) not null;

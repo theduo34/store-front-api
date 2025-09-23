@@ -25,8 +25,15 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "uuid", updatable = false)
+    @Column(name = "uuid", unique = true)
     private UUID uuid;
+
+    @PrePersist
+    public void generateUuid() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
+    }
 
     @Column(name = "email")
     private String email;

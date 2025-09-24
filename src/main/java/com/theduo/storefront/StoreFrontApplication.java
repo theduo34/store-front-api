@@ -15,7 +15,8 @@ public class StoreFrontApplication {
 		Environment env = context.getEnvironment();
 
 		String port = env.getProperty("server.port", "8080");
-		System.out.println("Server running on port http://localhost:" + port);
+		System.out.println("Server running on port http://localhost:"
+                + port + "/swagger-ui/index.html");
 
     }
 

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "My Store Front API",
+                title = "Store Front API",
                 version = "1.0",
                 description = "Store Front E-commerce API Endpoints"
         ),

@@ -18,3 +18,8 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+
+  jwt:
+    secretKey: ${JWT_SECRET}
+    accessTokenExpiration: 900 #15minutes
+    refreshTokenExpiration: 604800  #7days

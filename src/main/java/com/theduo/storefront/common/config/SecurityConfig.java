@@ -44,6 +44,11 @@ public class SecurityConfig {
                         SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( c -> c
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .requestMatchers("/carts/**").permitAll()
                         .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()

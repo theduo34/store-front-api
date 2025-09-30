@@ -63,5 +63,4 @@ public class User {
     @Builder.Default
     private List<Address> addresses = new ArrayList<>();
 
-
 }

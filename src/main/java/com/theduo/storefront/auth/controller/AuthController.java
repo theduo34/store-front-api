@@ -3,11 +3,14 @@ package com.theduo.storefront.auth.controller;
 import com.theduo.storefront.auth.dto.JwtResponse;
 import com.theduo.storefront.auth.dto.LoginRequest;
 import com.theduo.storefront.auth.dto.RegisterUserRequest;
+import com.theduo.storefront.common.config.JwtConfig;
 import com.theduo.storefront.common.exception.ExistByEmailException;
 import com.theduo.storefront.common.util.JwtService;
 import com.theduo.storefront.user.repo.UserRepository;
 import com.theduo.storefront.user.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +32,7 @@ public class AuthController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final JwtConfig jwtConfig;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
@@ -39,12 +43,12 @@ public class AuthController {
         var uri = builder.path("/user/{uuid}").buildAndExpand(userDto.getUuid()).toUri();
 
         return ResponseEntity.created(uri).body(userDto);
-
     }
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
-            @Valid @RequestBody LoginRequest request
+            @Valid @RequestBody LoginRequest request,
+             HttpServletResponse response
             ) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -56,8 +60,31 @@ public class AuthController {
         var user = userRepository.findUserByEmail(request.getEmail()).orElseThrow();
 
         var accessToken = jwtService.generateAccessToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        var cookie = new Cookie("refresh-token", refreshToken.toString());
+        cookie.setHttpOnly(true);
+        cookie.setPath("/auth/refresh");
+        cookie.setSecure(true);
+        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
+        response.addCookie(cookie);
 
         return ResponseEntity.ok(new JwtResponse(accessToken.toString()));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtResponse> refresh(
+            @CookieValue("refresh-token") String refreshToken
+    ) {
+        var jwt = jwtService.parseToken(refreshToken);
+        if(jwt == null || jwt.isExpired()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        var user = userRepository.findById(jwt.getUserId()).orElseThrow();
+        var accessToken = jwtService.generateAccessToken(user);
+
+        return  ResponseEntity.ok(new JwtResponse(accessToken.toString()));
     }
 
     @ExceptionHandler(ExistByEmailException.class)

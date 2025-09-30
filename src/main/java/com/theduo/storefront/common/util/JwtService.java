@@ -33,13 +33,13 @@ public class JwtService {
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
                 .build();
 
-        return new Jwt(claims, jwtConfig.getSecretKey());
+        return new Jwt(claims, jwtConfig.getSigningKey());
     }
 
     public Jwt parseToken(String token) {
         try{
             var claims = getClaims(token);
-            return new Jwt(claims, jwtConfig.getSecretKey());
+            return new Jwt(claims, jwtConfig.getSigningKey());
         } catch (JwtException e) {
             return null;
         }
@@ -47,7 +47,7 @@ public class JwtService {
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(jwtConfig.getSecretKey())
+                .verifyWith(jwtConfig.getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

@@ -1,4 +1,4 @@
-package com.theduo.storefront.common.exception;
+package com.theduo.storefront.category.exception;
 
 public class CategoryExistByNameException extends RuntimeException {
 }

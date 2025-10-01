@@ -1,4 +1,4 @@
-package com.theduo.storefront.common.exception;
+package com.theduo.storefront.common.exception.handler;
 
 import com.theduo.storefront.common.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;

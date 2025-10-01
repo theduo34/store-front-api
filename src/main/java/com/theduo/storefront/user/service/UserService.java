@@ -1,7 +1,7 @@
 package com.theduo.storefront.user.service;
 
 import com.theduo.storefront.auth.dto.RegisterUserRequest;
-import com.theduo.storefront.common.exception.ExistByEmailException;
+import com.theduo.storefront.user.exception.ExistByEmailException;
 import com.theduo.storefront.user.dto.UserDto;
 import com.theduo.storefront.user.mapper.UserMapper;
 import com.theduo.storefront.user.repo.GroupTypeRepository;

@@ -4,7 +4,7 @@ import com.theduo.storefront.auth.dto.JwtResponse;
 import com.theduo.storefront.auth.dto.LoginRequest;
 import com.theduo.storefront.auth.dto.RegisterUserRequest;
 import com.theduo.storefront.common.config.JwtConfig;
-import com.theduo.storefront.common.exception.ExistByEmailException;
+import com.theduo.storefront.user.exception.ExistByEmailException;
 import com.theduo.storefront.common.util.JwtService;
 import com.theduo.storefront.user.repo.UserRepository;
 import com.theduo.storefront.user.service.UserService;

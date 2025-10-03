@@ -10,11 +10,10 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -42,5 +41,30 @@ public class ProductController {
 
                 )
         );
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getAllProducts(
+            @RequestParam(required = false, name = "categoryId") Byte categoryId,
+            HttpServletRequest req
+    ){
+        var productDtos = productService.getAllProducts(categoryId);
+
+        return ResponseEntity.ok(ApiResponse.success(
+                productDtos,
+                "All products retrieved successfully",
+                HttpStatus.OK.value(),
+                req.getRequestURI()
+
+        ));
+
+    }
+
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<ApiResponse<ProductDto>> getProduct(
+            @PathVariable Byte categoryId,
+            HttpServletRequest req
+    ){
+        return null;
     }
 }

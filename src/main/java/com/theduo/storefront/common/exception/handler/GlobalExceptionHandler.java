@@ -1,6 +1,6 @@
 package com.theduo.storefront.common.exception.handler;
 
-import com.theduo.storefront.common.response.ApiResponse;
+import com.theduo.storefront.common.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationErrors(
+    public ResponseEntity<ErrorResponse> handleValidationErrors(
             MethodArgumentNotValidException exception,
             HttpServletRequest request
     ) {
@@ -21,8 +21,8 @@ public class GlobalExceptionHandler {
         String field = error.getField();
         String message = error.getDefaultMessage();
 
-        ApiResponse<Void> response = ApiResponse.error(
-                String.format("Validation failed: %s %s", field, message),
+        ErrorResponse response = ErrorResponse.of(
+                String.format(field + ": %s", message),
                 HttpStatus.BAD_REQUEST.value(),
                 request.getRequestURI()
         );

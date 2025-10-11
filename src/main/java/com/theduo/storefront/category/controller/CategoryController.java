@@ -3,7 +3,7 @@ package com.theduo.storefront.category.controller;
 import com.theduo.storefront.category.dto.CategoryDto;
 import com.theduo.storefront.category.dto.CreateCategoryRequest;
 import com.theduo.storefront.category.service.CategoryService;
-import com.theduo.storefront.common.response.ApiResponse;
+import com.theduo.storefront.common.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CategoryDto>> createCategory(
+    public ResponseEntity<SuccessResponse<CategoryDto>> createCategory(
             @Valid @RequestBody CreateCategoryRequest request,
             UriComponentsBuilder builder,
             HttpServletRequest req
@@ -32,7 +32,7 @@ public class CategoryController {
 
         var uri = builder.path("/category/{id}").buildAndExpand(categoryDto.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(ApiResponse.success(
+        return ResponseEntity.created(uri).body(SuccessResponse.of(
                 categoryDto,
                 "Category created successfully",
                 HttpStatus.CREATED.value(),
@@ -41,14 +41,14 @@ public class CategoryController {
     }
 
     @PutMapping("/{categoryId}")
-    public ResponseEntity<ApiResponse<CategoryDto>> updateCategory(
+    public ResponseEntity<SuccessResponse<CategoryDto>> updateCategory(
             @PathVariable int categoryId,
             @Valid @RequestBody CreateCategoryRequest request,
             HttpServletRequest req
     ) {
         var categoryDto = categoryService.updateCategory(categoryId,request);
 
-        return ResponseEntity.ok(ApiResponse.success(
+        return ResponseEntity.ok(SuccessResponse.of(
                 categoryDto,
                 "Category updated successfully",
                 HttpStatus.OK.value(),
@@ -57,13 +57,13 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<ApiResponse<CategoryDto>> getCategoryById(
+    public ResponseEntity<SuccessResponse<CategoryDto>> getCategoryById(
             @PathVariable int categoryId,
             HttpServletRequest req
     ) {
         var categoryDto = categoryService.getCategoryById(categoryId);
 
-        return ResponseEntity.ok(ApiResponse.success(
+        return ResponseEntity.ok(SuccessResponse.of(
                 categoryDto,
                 "Category retrieved successfully",
                 HttpStatus.OK.value(),
@@ -72,12 +72,12 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategories(
+    public ResponseEntity<SuccessResponse<List<CategoryDto>>> getAllCategories(
             HttpServletRequest req
     ) {
         var categoryDto = categoryService.getAllCategories();
 
-        return ResponseEntity.ok(ApiResponse.success(
+        return ResponseEntity.ok(SuccessResponse.of(
                 categoryDto,
                 "Categories retrieved successfully",
                 HttpStatus.OK.value(),
@@ -87,14 +87,13 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<ApiResponse<Void>> deleteCategoryById(
+    public ResponseEntity<SuccessResponse<Void>> deleteCategoryById(
             @PathVariable int categoryId,
             HttpServletRequest req
     ) {
         categoryService.deleteCategoryById(categoryId);
 
-        return ResponseEntity.ok(
-                ApiResponse.success(
+        return ResponseEntity.ok(SuccessResponse.of(
                         null,
                         "Category deleted successfully",
                         HttpStatus.OK.value(),

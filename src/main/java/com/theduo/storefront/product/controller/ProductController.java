@@ -1,8 +1,9 @@
 package com.theduo.storefront.product.controller;
 
-import com.theduo.storefront.common.response.ApiResponse;
+import com.theduo.storefront.common.response.SuccessResponse;
 import com.theduo.storefront.product.dto.CreateProductRequest;
 import com.theduo.storefront.product.dto.ProductDto;
+import com.theduo.storefront.product.dto.UpdateProductRequest;
 import com.theduo.storefront.product.service.ProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductDto>> register(
+    public ResponseEntity<SuccessResponse<ProductDto>> register(
             @Valid @RequestBody CreateProductRequest request,
             UriComponentsBuilder builder,
             HttpServletRequest req
@@ -33,7 +34,7 @@ public class ProductController {
         var uri = builder.path("/product/{id}").buildAndExpand(productDto.getId()).toUri();
 
         return ResponseEntity.created(uri).body(
-                ApiResponse.success(
+                SuccessResponse.of(
                         productDto,
                         "Product added successfully",
                         HttpStatus.CREATED.value(),
@@ -44,13 +45,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductDto>>> getAllProducts(
+    public ResponseEntity<SuccessResponse<List<ProductDto>>> getAllProducts(
             @RequestParam(required = false, name = "categoryId") Byte categoryId,
             HttpServletRequest req
     ){
         var productDtos = productService.getAllProducts(categoryId);
 
-        return ResponseEntity.ok(ApiResponse.success(
+        return ResponseEntity.ok(SuccessResponse.of(
                 productDtos,
                 "All products retrieved successfully",
                 HttpStatus.OK.value(),
@@ -60,11 +61,47 @@ public class ProductController {
 
     }
 
-    @GetMapping("/{categoryId}")
-    public ResponseEntity<ApiResponse<ProductDto>> getProduct(
-            @PathVariable Byte categoryId,
+    @GetMapping("/{productId}")
+    public ResponseEntity<SuccessResponse<ProductDto>> getProduct(
+            @PathVariable Long productId,
             HttpServletRequest req
     ){
-        return null;
+        var productDto = productService.getProductById(productId);
+
+        return ResponseEntity.ok(SuccessResponse.of(
+                productDto,
+                "Product retrieved successfully",
+                HttpStatus.OK.value(),
+                req.getRequestURI()
+        ));
+    }
+
+    @PatchMapping("/{productId}")
+    public ResponseEntity<SuccessResponse<ProductDto>> updateProduct(
+            @PathVariable Long productId,
+            @Valid @RequestBody UpdateProductRequest request,
+            HttpServletRequest req
+    ){
+        var productDto = productService.updateProduct(productId, request);
+        return ResponseEntity.ok(SuccessResponse.of(
+                productDto,
+                "Product updated successfully",
+                HttpStatus.OK.value(),
+                req.getRequestURI()
+        ));
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<SuccessResponse<Void>> deleteProduct(
+            @PathVariable Long productId,
+            HttpServletRequest req
+    ){
+        productService.deleteProduct(productId);
+        return ResponseEntity.ok(SuccessResponse.of(
+                null,
+                "Product deleted successfully",
+                HttpStatus.OK.value(),
+                req.getRequestURI()
+        ));
     }
 }

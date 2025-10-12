@@ -16,37 +16,37 @@ public class CategoryExceptionHandler {
 
     @ExceptionHandler(CategoryExistByNameException.class)
     public ResponseEntity<ErrorResponse> handleCategoryExistByNameException(
-            CategoryExistByNameException ex,
-            HttpServletRequest request) {
+            CategoryExistByNameException ex, HttpServletRequest request
+    ) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                ErrorResponse.of(
-                        ex.getMessage(),
+                ErrorResponse.of(ex.getMessage(),
                         HttpStatus.CONFLICT.value(),
-                        request.getRequestURI())
-                );
+                        request.getRequestURI()
+                )
+        );
     }
 
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCategoryNotFound(
-            CategoryNotFoundException ex,
-            HttpServletRequest request) {
+            CategoryNotFoundException ex, HttpServletRequest request
+    ) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse.of(
-                        ex.getMessage(),
+                ErrorResponse.of(ex.getMessage(),
                         HttpStatus.NOT_FOUND.value(),
-                        request.getRequestURI())
+                        request.getRequestURI()
+                )
         );
     }
 
     @ExceptionHandler(CategoryWithAProductException.class)
     public ResponseEntity<ErrorResponse> handleCategoryWithProduct(
-            CategoryWithAProductException ex,
-            HttpServletRequest request) {
+            CategoryWithAProductException ex, HttpServletRequest request
+    ) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                ErrorResponse.of(
-                        ex.getMessage(),
+                ErrorResponse.of(ex.getMessage(),
                         HttpStatus.CONFLICT.value(),
-                        request.getRequestURI())
+                        request.getRequestURI()
+                )
         );
     }
 }

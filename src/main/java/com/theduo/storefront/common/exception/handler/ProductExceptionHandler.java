@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(assignableTypes = {ProductController.class})
 public class ProductExceptionHandler {
-
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCategoryNotFoundException(
-            CategoryNotFoundException e, HttpServletRequest request) {
+            CategoryNotFoundException e, HttpServletRequest request
+    ) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse.of(
-                        e.getMessage(),
+                ErrorResponse.of(e.getMessage(),
                         HttpStatus.NOT_FOUND.value(),
                         request.getRequestURI()
                 )
@@ -28,10 +27,10 @@ public class ProductExceptionHandler {
 
     @ExceptionHandler(ProductNotException.class)
     public ResponseEntity<ErrorResponse> handleProductNotFoundException(
-            ProductNotException e, HttpServletRequest request) {
+            ProductNotException e, HttpServletRequest request
+    ) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse.of(
-                        e.getMessage(),
+                ErrorResponse.of(e.getMessage(),
                         HttpStatus.NOT_FOUND.value(),
                         request.getRequestURI()
                 )

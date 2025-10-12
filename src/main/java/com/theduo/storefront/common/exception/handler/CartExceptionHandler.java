@@ -14,11 +14,10 @@ public class CartExceptionHandler {
 
     @ExceptionHandler(CartNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleCartNotFound(
-            CartNotFoundException ex,
-            HttpServletRequest request) {
+            CartNotFoundException ex, HttpServletRequest request
+    ) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                ErrorResponse.of(
-                        ex.getMessage(),
+                ErrorResponse.of(ex.getMessage(),
                         HttpStatus.NOT_FOUND.value(),
                         request.getRequestURI())
         );

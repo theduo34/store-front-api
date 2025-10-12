@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(
             MethodArgumentNotValidException exception,
@@ -18,15 +17,13 @@ public class GlobalExceptionHandler {
     ) {
         // Get first validation error
         var error = exception.getBindingResult().getFieldErrors().getFirst();
-        String field = error.getField();
-        String message = error.getDefaultMessage();
 
-        ErrorResponse response = ErrorResponse.of(
-                String.format(field + ": %s", message),
-                HttpStatus.BAD_REQUEST.value(),
-                request.getRequestURI()
+        return ResponseEntity.badRequest().body(
+                ErrorResponse.of(
+                        String.format(error.getField() + ": %s", error.getDefaultMessage()),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getRequestURI()
+                )
         );
-
-        return ResponseEntity.badRequest().body(response);
     }
 }

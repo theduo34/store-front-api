@@ -15,26 +15,22 @@ public class UserExceptionHandler {
 
     @ExceptionHandler(ExistByEmailException.class)
     public ResponseEntity<ErrorResponse> handleExistByEmail(
-            ExistByEmailException ex,
-            HttpServletRequest request
+            ExistByEmailException ex, HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
-               ErrorResponse.of(
-                        ex.getMessage(),
+               ErrorResponse.of(ex.getMessage(),
                         HttpStatus.CONFLICT.value(),
                         request.getRequestURI()
-                )
+               )
         );
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(
-            BadCredentialsException ex,
-            HttpServletRequest request
+            BadCredentialsException ex, HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                ErrorResponse.of(
-                        ex.getMessage(),
+                ErrorResponse.of(ex.getMessage(),
                         HttpStatus.UNAUTHORIZED.value(),
                         request.getRequestURI()
                 )

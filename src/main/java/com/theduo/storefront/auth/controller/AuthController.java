@@ -4,24 +4,23 @@ import com.theduo.storefront.auth.dto.JwtResponse;
 import com.theduo.storefront.auth.dto.LoginRequest;
 import com.theduo.storefront.auth.dto.RegisterUserRequest;
 import com.theduo.storefront.common.config.JwtConfig;
-import com.theduo.storefront.user.exception.ExistByEmailException;
+import com.theduo.storefront.common.response.SuccessResponse;
 import com.theduo.storefront.common.util.JwtService;
 import com.theduo.storefront.user.repo.UserRepository;
 import com.theduo.storefront.user.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -87,18 +86,22 @@ public class AuthController {
         return  ResponseEntity.ok(new JwtResponse(accessToken.toString()));
     }
 
-    @ExceptionHandler(ExistByEmailException.class)
-    public ResponseEntity<Map<String,String>> handleExistByEmailException() {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                Map.of("email", "Email already exists")
+    @PostMapping("/logout")
+    public ResponseEntity<SuccessResponse<Void>> logout(
+            HttpServletResponse response,
+            HttpServletRequest request
+    ) {
+        var cookie = new Cookie("refresh-token", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/auth/refresh");
+        cookie.setSecure(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok().body(
+                SuccessResponse.of(null, "Logout success",
+                        HttpStatus.OK.value(), request.getRequestURI()
+                )
         );
     }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String,String>> handleBadCredentialsException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                Map.of("error", "Invalid email or password")
-        );
-    }
-
 }

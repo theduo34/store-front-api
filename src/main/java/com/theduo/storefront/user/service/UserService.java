@@ -1,12 +1,16 @@
 package com.theduo.storefront.user.service;
 
 import com.theduo.storefront.auth.dto.RegisterUserRequest;
+import com.theduo.storefront.auth.service.AuthService;
+import com.theduo.storefront.user.dto.ChangePasswordRequest;
+import com.theduo.storefront.user.dto.UpdateUserRequest;
 import com.theduo.storefront.user.exception.ExistByEmailException;
 import com.theduo.storefront.user.dto.UserDto;
 import com.theduo.storefront.user.mapper.UserMapper;
 import com.theduo.storefront.user.repo.GroupTypeRepository;
 import com.theduo.storefront.user.repo.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +27,7 @@ public class UserService implements UserDetailsService {
     private final UserMapper userMapper;
     private final GroupTypeRepository groupTypeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
     public UserDto register(RegisterUserRequest request) {
         if(userRepository.existsByEmail(request.getEmail())) {
@@ -49,4 +54,27 @@ public class UserService implements UserDetailsService {
         );
 
     }
+
+    // Update user profile details
+    public UserDto updateUser(UpdateUserRequest request) {
+        var user = authService.getCurrentUser();
+
+        userMapper.toUpdateDto(request, user);
+        var savedUser = userRepository.save(user);
+
+        return userMapper.toUserDto(savedUser);
+    }
+
+    // Change user password - old password to new password
+    public void changePassword(ChangePasswordRequest request) {
+        var user = authService.getCurrentUser();
+
+        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Incorrect old password");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
 }

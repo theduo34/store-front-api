@@ -6,6 +6,7 @@ import com.theduo.storefront.user.exception.ExistByEmailException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,6 +22,20 @@ public class UserExceptionHandler {
                ErrorResponse.of(
                         ex.getMessage(),
                         HttpStatus.CONFLICT.value(),
+                        request.getRequestURI()
+                )
+        );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(
+            BadCredentialsException ex,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ErrorResponse.of(
+                        ex.getMessage(),
+                        HttpStatus.UNAUTHORIZED.value(),
                         request.getRequestURI()
                 )
         );

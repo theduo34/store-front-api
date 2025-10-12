@@ -6,6 +6,7 @@ import com.theduo.storefront.user.dto.ChangePasswordRequest;
 import com.theduo.storefront.user.dto.UpdateUserRequest;
 import com.theduo.storefront.user.exception.ExistByEmailException;
 import com.theduo.storefront.user.dto.UserDto;
+import com.theduo.storefront.user.exception.UserNotFoundException;
 import com.theduo.storefront.user.mapper.UserMapper;
 import com.theduo.storefront.user.repo.GroupTypeRepository;
 import com.theduo.storefront.user.repo.UserRepository;
@@ -75,6 +76,14 @@ public class UserService implements UserDetailsService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    }
+
+    public UserDto getMyProfile() {
+        var user = authService.getCurrentUser();
+
+        var profile = userRepository.findById(user.getId()).orElseThrow((UserNotFoundException::new));
+
+        return userMapper.toUserDto(profile);
     }
 
 }

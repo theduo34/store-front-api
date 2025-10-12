@@ -49,5 +49,17 @@ public class UserController {
         );
     }
 
+    @GetMapping("/my-profile")
+    public ResponseEntity<SuccessResponse<UserDto>> getMyProfile(
+            HttpServletRequest ex
+    ) {
+        var userDto = userService.getMyProfile();
 
+        return ResponseEntity.ok().body(
+                SuccessResponse.of(
+                        userDto, "Profile retrieved successfully",
+                        HttpStatus.OK.value(), ex.getRequestURI()
+                )
+        );
+    }
 }

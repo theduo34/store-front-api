@@ -44,7 +44,8 @@ public class ProductService {
             products = productRepository.findAllWithCategory();
         }
 
-        return products.stream().map(productMapper::toProductDto).collect(Collectors.toList());
+        return products.stream().map(productMapper::toProductDto)
+                .collect(Collectors.toList());
     }
 
     // Fetch a single created product using it product id
@@ -66,7 +67,6 @@ public class ProductService {
         }
 
         productMapper.toUpdateDto(request, product);
-
         var savedProduct = productRepository.save(product);
         return productMapper.toProductDto(savedProduct);
     }

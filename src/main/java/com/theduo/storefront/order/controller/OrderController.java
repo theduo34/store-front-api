@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/order")
-@Tag(name = "Orders", description = "Manage customer orders")
+@Tag(name = "Order", description = "Manage customer orders")
 public class OrderController {
     private final OrderService orderService;
 

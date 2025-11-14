@@ -41,6 +41,7 @@ public class Order {
     @Column(name = "total_price")
     private BigDecimal totalPrice;
 
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<OrderItems> items = new LinkedHashSet<>();
 
     public static Order createNewOrder(User customer, Cart cart) {

@@ -28,7 +28,7 @@ target/
 .env.*.local
 
 # Application specific
-/application-dev.yaml
+**/application-dev.yaml
 
 ### NetBeans ###
 /nbproject/private/
